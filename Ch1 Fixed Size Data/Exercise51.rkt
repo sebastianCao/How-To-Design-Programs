@@ -1,0 +1,50 @@
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-beginner-reader.ss" "lang")((modname Exercise51) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
+(require 2htdp/image)
+(require 2htdp/universe)
+
+(define SIDE 200)
+(define PLATE (square SIDE "solid" "black"))
+(define DURATION 28)
+(define GREEN-LIGHT (overlay/align "center" "center" (circle (* 0.4 SIDE) "solid" "green") PLATE))
+(define YELLOW-LIGHT (overlay/align "center" "center" (circle (* 0.4 SIDE) "solid" "yellow") PLATE))
+(define RED-LIGHT (overlay/align "center" "center" (circle (* 0.4 SIDE) "solid" "red") PLATE))
+
+; WorldState -> WorldState
+; launches the program from inital state
+(define (main ws)
+  (big-bang ws
+    [on-tick tock 1]
+    [to-draw render]))
+
+; WorldState -> WorldState
+; produces the next TrafficLight
+; check-expects not necessary 
+
+;(define (tock ws) "green") ;stub
+
+(define (tock ws)
+  (traffic-light-next ws))
+
+; WorldState -> Image
+; renders the traffic light
+
+(define (render ws)
+  (cond [(string=? "green" ws) (above PLATE PLATE GREEN-LIGHT)]
+        [(string=? "yellow" ws) (above PLATE YELLOW-LIGHT PLATE)]
+        [(string=? "red" ws) (above RED-LIGHT PLATE PLATE)]))
+
+; TrafficLight -> TrafficLight
+; yields the next state given current state s
+(check-expect (traffic-light-next "red") "green")
+(check-expect (traffic-light-next "green") "yellow")
+(check-expect (traffic-light-next "yellow") "red")
+
+(define (traffic-light-next s)
+  (cond
+    [(string=? "red" s) "green"]
+    [(string=? "green" s) "yellow"]
+    [(string=? "yellow" s) "red"]))
+
+
