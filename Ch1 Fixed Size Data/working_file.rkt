@@ -18,24 +18,24 @@
 ; – a Number between -3 and -1
 ; – a NonnegativeNumber 
 ; interpretation a grounded rocket, in countdown mode,
-; a number denotes the number of pixels between the
-; top of the canvas and the rocket (its height)
-
-
+; or the distance between the ground and vertical
+; center of the rocket 
 
 
 ;; ==============Functions======================
 
 ; LRCD -> LRCD
-(define (main1 s)
+(define (main2 s)
   (big-bang s
     [to-draw show]
-    [on-key launch]))
+    [on-key launch]
+    [on-tick fly 1/10]
+    [stop-when done?]))
 
 
-; LRCD -> Image
+; LRCD -> Image 
 ; renders the state as a resting or flying rocket
-(check-expect (show "resting") (place-image ROCKET 10 (- HEIGHT CENTER) BACKG))
+(check-expect (show "resting") (place-image ROCKET 10 (- HEIGHT ) BACKG))
 (check-expect (show -2) (place-image (text "-2" 20 "red")
                                      10
                                      (* 3/4 WIDTH)
@@ -53,24 +53,21 @@
 ;(define (show x) x) ;stub
 
 (define (show x)
-  (cond [(string? x) (draw-rocket x)]
+  (cond [(string? x) (draw-rocket HEIGHT)]
         [(<= -3 x -1) (place-image (text (number->string x) 20 "red")
                                    10
                                    (* 3/4 WIDTH)
-                                   (draw-rocket x))]
+                                   (draw-rocket HEIGHT))]
         [(>= x 0) (draw-rocket x)]))
 
 
 ; LRCD -> Image
-; shows a rocket on the canvas 
+; shows a rocket on the canvas, helper function to show 
 
 (define (draw-rocket x)
   (place-image ROCKET
                10
-               (- (cond [(string? x) HEIGHT]
-                        [(<= -3 x -1) HEIGHT]
-                        [(>= x 0) x])
-                  CENTER)
+               (- x CENTER)
                BACKG))
 
 
@@ -96,7 +93,28 @@
 
 ; LRCD -> LRCD
 ; raises the rocket by YDELTA if it is moving already
+(check-expect (fly "resting") "resting")
+(check-expect (fly -3) -2)
+(check-expect (fly -2) -1)
+(check-expect (fly -1) HEIGHT)
+(check-expect (fly 10) (- 10 YDELTA))
+(check-expect (fly 22) (- 22 YDELTA))
 
-(define (fly x) x) ;stub
+;(define (fly x) x) ;stub
 
+(define (fly x)
+  (cond [(string? x) x]
+        [(<= -3 x -1) (if (= x -1) HEIGHT (+ x 1))]
+        [(>= x 0) (- x YDELTA)]))
 
+; LRCD -> Boolean
+; produces true when rocket has completely left the world
+(check-expect (done? "resting") false)
+(check-expect (done? -1) false)
+(check-expect (done? 0) true)
+ 
+(define (done? x)
+  (cond [(string? x) false]
+        [(= x 0) true]
+        [else false]))
+ 
