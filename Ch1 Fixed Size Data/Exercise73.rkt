@@ -1,0 +1,11 @@
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-beginner-reader.ss" "lang")((modname Exercise73) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
+; Posn Number -> Posn
+; take Posn p and Number and produces a Posn where x value is Number
+; and y value is y value of p
+(check-expect (posn-up-x (make-posn 10 20) 5) (make-posn 5 20))
+;(define (posn-up-x p) p) ;stub
+
+(define (posn-up-x p n)
+  (make-posn n (posn-y p)))
