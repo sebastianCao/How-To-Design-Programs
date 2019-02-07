@@ -8,6 +8,6 @@
 (define L2 false)
 
 
-(define-struct tlw (letter letter letter))
+(define-struct tlw (letter1 letter2 letter3))
 ; Twl is (make-tlw Letter Letter Letter)
 
