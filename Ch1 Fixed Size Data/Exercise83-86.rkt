@@ -19,6 +19,14 @@
 (define e2 (make-editor "" "helloworld"))
 (define e3 (make-editor "helloworld" ""))
 
+;Editor -> Editor
+;starts the word editor program
+;check-expects not necessary
+
+(define (run e)
+  (big-bang e
+    [on-key edit]
+    [to-draw render]))
 
 ; Editor -> Image
 ; produces an visual representation of the editor 
@@ -101,11 +109,3 @@
 (define (insert-character e ke)
   (make-editor (string-append (editor-pre e) ke) (editor-post e)))
 
-;Editor -> Editor
-;starts the word editor program
-;check-expects not necessary
-
-(define run
-  (big-bang e1
-    [on-key edit]
-    [to-draw render]))
